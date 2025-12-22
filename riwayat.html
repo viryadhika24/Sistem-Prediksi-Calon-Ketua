@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Riwayat Prediksi Ketua Osis</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styleup.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container fade-in">
+    <h2><i class="bi bi-clock-history"></i> Riwayat Prediksi Calon Ketua Osis</h2>
+    <div id="historyList" class="row"></div>
+    <div class="d-flex justify-content-center mt-4">
+        <button class="btn btn-primary" onclick="window.location.href='index.html'"><i class="bi bi-arrow-left"></i> Kembali ke Input</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    async function loadHistory() {
+        try {
+            const response = await fetch('http://localhost:3000/api/candidates');
+            const candidates = await response.json();
+            const container = document.getElementById('historyList');
+            container.innerHTML = '';
+            candidates.forEach(c => {
+                const card = `
+                    <div class="col-md-4 mb-4">
+                        <div class="card p-3">
+                            <h5>${c.nama}</h5>
+                            <p>Rapot: ${c.rapot}, Sikap: ${c.sikap}, Prestasi: ${c.prestasi}</p>
+                            <p>Skor: ${c.score}, Status: ${c.status}</p>
+                            <button class="btn btn-warning btn-sm" onclick="editCandidate(${c.id})">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteCandidate(${c.id})">Hapus</button>
+                            <button class="btn btn-info btn-sm" onclick="viewChart(${c.id})">Lihat Grafik</button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        } catch (err) {
+            alert('Error loading history: ' + err.message);
+        }
+    }
+
+    async function deleteCandidate(id) {
+        if (confirm('Yakin hapus?')) {
+            try {
+                await fetch(`http://localhost:3000/api/candidates/${id}`, { method: 'DELETE' });
+                loadHistory();
+            } catch (err) {
+                alert('Error deleting: ' + err.message);
+            }
+        }
+    }
+
+    function editCandidate(id) {
+        // Redirect to index.html with edit mode (gunakan URL params atau localStorage untuk load data)
+        window.location.href = `index.html?edit=${id}`;
+    }
+
+    function viewChart(id) {
+        // Load data dan tampilkan modal chart (gunakan Bootstrap modal)
+        // ... (implementasi mirip result.html, tapi untuk single candidate)
+    }
+
+    window.onload = loadHistory;
+</script>
+<!-- Tambahkan Modal untuk Chart -->
+<div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chartModalLabel">Grafik Calon</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <canvas id="singleChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // ... (fungsi loadHistory, deleteCandidate, editCandidate tetap sama)
+
+    async function viewChart(id) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/candidates/${id}`);
+            const candidate = await response.json();
+            
+            // Render chart di modal (mirip result.html, tapi single bar)
+            const ctx = document.getElementById('singleChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [candidate.nama],
+                    datasets: [{
+                        label: 'Skor Fuzzy (0-100)',
+                        data: [parseFloat(candidate.score)],
+                        backgroundColor: candidate.score <= 40 ? '#dc3545' : candidate.score <= 70 ? '#ffc107' : '#28a745',
+                        borderColor: '#ffffff',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, max: 100, title: { display: true, text: 'Skor Fuzzy', color: '#ffffff' }, ticks: { color: '#ffffff' } },
+                        x: { title: { display: true, text: 'Nama Calon', color: '#ffffff' }, ticks: { color: '#ffffff' } }
+                    },
+                    plugins: { legend: { labels: { color: '#ffffff' } } }
+                }
+            });
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('chartModal'));
+            modal.show();
+        } catch (err) {
+            alert('Error loading chart: ' + err.message);
+        }
+    }
+
+    window.onload = loadHistory;
+</script>
+</body>
+</html>
