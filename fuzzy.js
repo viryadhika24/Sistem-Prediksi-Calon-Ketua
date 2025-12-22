@@ -404,8 +404,8 @@ async function hitungDanTampilkan() {
 }
 
 // Reset Form
-function resetForm() {
+/*function resetForm() {
     document.getElementById('numCalon').value = '1';
     document.getElementById('calonContainer').innerHTML = '';
     generateForms(1); // Default 1 calon
-}
+}*/
