@@ -254,15 +254,9 @@ function drawMFChart(inputValue, fuzzyValues) {
 }
 
 // Reset Form
-function resetForm() {
-    document.getElementById("rapot").value = "";
-    document.getElementById("sikap").value = "0";
-    document.getElementById("prestasi").value = "0";
-    document.getElementById("hasil").innerHTML = "";
-    // Reset chart jika perlu
-    const ctx = document.getElementById('mfChart').getContext('2d');
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-}
+// function resetForm() {
+    
+// }
 
 // Fungsi Utama Hitung Fuzzy untuk Multiple Calon
 function hitungFuzzyMultiple(calonData) {
@@ -404,8 +398,16 @@ async function hitungDanTampilkan() {
 }
 
 // Reset Form
-/*function resetForm() {
+function resetForm() {
     document.getElementById('numCalon').value = '1';
     document.getElementById('calonContainer').innerHTML = '';
     generateForms(1); // Default 1 calon
-}*/
+
+    document.getElementById("rapot").value = "";
+    document.getElementById("sikap").value = "0";
+    document.getElementById("prestasi").value = "0";
+    document.getElementById("hasil").innerHTML = "";
+    // Reset chart jika perlu
+    const ctx = document.getElementById('mfChart').getContext('2d');
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+}
