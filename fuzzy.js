@@ -175,10 +175,10 @@ function hitungFuzzy() {
         alert("Pilih sikap!");
         return;
     }
-    // if (prestasi === 0) {
-    //     alert("Pilih prestasi!");
-    //     return;
-    // }
+    if (isNaN(prestasi)) {
+        alert("Prestasi tidak valid!");
+        return;
+    }
 
     // Konversi rapot ke skala fuzzy (0-40, tapi tetap proporsional)
     let rapotFuzzyValue = (rapot / 100) * 40; // Skala ke 0-40
@@ -268,7 +268,7 @@ function hitungFuzzyMultiple(calonData) {
         let nama = calon.nama;
 
         // Validasi (sama seperti asli, tapi per calon)
-        if (isNaN(rapot) || rapot < 0 || rapot > 100 || sikap === 0 || prestasi === 0 || !nama.trim()) {
+        if (isNaN(rapot) || rapot < 0 || rapot > 100 || sikap === 0 || isNaN(prestasi) || !nama.trim()) {
             alert(`Data calon ${nama} tidak valid! Pastikan semua field diisi.`);
             return;
         }
