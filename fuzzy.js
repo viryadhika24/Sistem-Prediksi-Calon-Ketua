@@ -175,10 +175,10 @@ function hitungFuzzy() {
         alert("Pilih sikap!");
         return;
     }
-    if (prestasi === 0) {
-        alert("Pilih prestasi!");
-        return;
-    }
+    // if (prestasi === 0) {
+    //     alert("Pilih prestasi!");
+    //     return;
+    // }
 
     // Konversi rapot ke skala fuzzy (0-40, tapi tetap proporsional)
     let rapotFuzzyValue = (rapot / 100) * 40; // Skala ke 0-40
